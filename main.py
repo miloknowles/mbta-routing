@@ -1,8 +1,8 @@
 import json
 from jsonpointer import resolve_pointer
 
-from mbta_api import get_routes, get_stops
-from utils import *
+from utils.mbta_api import get_routes, get_stops
+from utils.utils import *
 
 
 def problem1_demo():

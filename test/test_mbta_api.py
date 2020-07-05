@@ -1,7 +1,7 @@
 import unittest, json
 
-from mbta_api import *
-from utils import print_json
+from utils.mbta_api import *
+from utils.utils import *
 
 
 class MbtaApiTest(unittest.TestCase):
