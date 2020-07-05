@@ -1,9 +1,25 @@
 import json
 from math import radians, cos, sin, asin, sqrt
 
+from jsonpointer import resolve_pointer
+
 
 def print_json(d):
   print(json.dumps(d, indent=2))
+
+
+def strip_attributes(json, ptr):
+  """
+  Convenience function for getting one or more attributes from a list of objects.
+  """
+  return [resolve_pointer(obj, ptr) for obj in json["data"]]
+
+
+def index_by_attribute(json, key_ptr):
+  index = {}
+  for obj in json["data"]:
+    index[resolve_pointer(obj, key_ptr)] = obj
+  return index
 
 
 def haversine_distance(lon1, lat1, lon2, lat2):

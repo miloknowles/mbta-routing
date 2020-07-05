@@ -57,26 +57,3 @@ def get_stops(route_ids, sort_by="name", descending=False):
   success = (r.status_code == 200)
 
   return success, r.json()
-
-
-def strip_attributes(json, ptr):
-  """
-  Convenience function for getting one or more attributes from a list of objects.
-  """
-  return [resolve_pointer(obj, ptr) for obj in json["data"]]
-
-
-def index_by_attribute(json, key_ptr):
-  index = {}
-  for obj in json["data"]:
-    index[resolve_pointer(obj, key_ptr)] = obj
-  return index
-
-
-def count_stops_each_route(stops_json):
-  stops_each_route = {}
-
-  print(stops_json)
-
-  # for stop in stops_json["data"]:
-    # print(stop["relationships"]["route"])

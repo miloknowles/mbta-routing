@@ -2,7 +2,6 @@ import json
 from jsonpointer import resolve_pointer
 
 from mbta_api import get_routes, get_stops
-from mbta_api import strip_attributes, count_stops_each_route, index_by_attribute
 from utils import *
 
 
