@@ -84,6 +84,10 @@ def find_coarse_route(stop_A, stop_B, routes_containing_stop):
         adjacent[route_i].add((route_j, stop))
         adjacent[route_j].add((route_i, stop))
 
+  # Easy case #1: stop_A and stop_B are the same.
+  if stop_A == stop_B:
+    return []
+
   # Easy case: If stop_A and stop_B are on the same route already, return that one.
   if len(possible_routes_A.intersection(possible_routes_B)) > 0:
     shared_route = possible_routes_A.intersection(possible_routes_B).pop()

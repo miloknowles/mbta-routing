@@ -16,6 +16,7 @@ def print_coarse_route(S, A, B):
   A (str) : Name of the origin stop.
   B (str) : Name of the destination stop.
   """
+  i = -1
   print("\n====== Directions for {} to {} ======".format(A, B))
   print("(1) Start at {}".format(A))
   for i, node in enumerate(S):

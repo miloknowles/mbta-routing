@@ -41,6 +41,10 @@ class RoutingTest(unittest.TestCase):
     self.assertEqual(S[0].parent_node, None)
     self.assertEqual(S[0].connect_stop, "Valley Road")
 
+  def test_same_start_and_end(self):
+    S = find_coarse_route("Forest Hills", "Forest Hills", _ROUTES_CONTAINING_STOP)
+    print_coarse_route(S, "Forest Hills", "Forest Hills")
+
   def test_blue_green_OR_orange_red(self):
     """
     This test is under-constrained, since you could take
