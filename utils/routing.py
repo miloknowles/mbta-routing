@@ -1,23 +1,15 @@
-# stop ==> line(s) its on
-# nodes are connections between lines
-# returns a coarse list of ordered lines
-
-# figure out which line the input is on (could be multiple)
-# figure out which line the output is on (could be multiple)
-
-# for input/output line pair:
-  # find_line_path(input, output)
-
-# return candidates
-
+import pickle, os
 from collections import defaultdict, deque, namedtuple
 from itertools import combinations
-import pickle, os
 
 from utils.mbta_api import get_routes, get_stops
 from utils.utils import *
 
 
+# Represents a transfer from one route to another.
+# "name" is the long_name of the route being travelled.
+# "parent_node" points to the previous route (None if this the first route).
+# "connect_stop" is the name of the stop where the transfer to this route occurred.
 RouteNode = namedtuple("RouteNode", ["name", "parent_node", "connect_stop"])
 
 
