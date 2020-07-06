@@ -10,8 +10,8 @@ def get_routes(route_types=[0, 1], sort_by="long_name", descending=False):
   route_types (list of int/str) :
     A list of route types to include in the query (i.e 0=Light Rail, 1=Heavy Rail, etc). If None,
     or an empty list, all of the route types will be returned.
-  sort_by (str) :
-    An attribute to sort by (e.g. "long_name").
+  sort_by (str or None) :
+    An attribute to sort by (e.g. "long_name"). If None, don't do sorting.
   descending (bool) :
     Return results in descending order, according to the sort_by attribute.
 
@@ -41,8 +41,8 @@ def get_stops(route_ids, sort_by="name", descending=False):
   route_ids (list of str) :
     A list of IDs to filter by. Based on a get_routes query, the valid route IDs are:
     'Blue', 'Green-B', 'Green-C', 'Green-D', 'Green-E', 'Mattapan', 'Orange', 'Red'
-  sort_by (str) :
-    An attribute to sort by (e.g. "name").
+  sort_by (str or None) :
+    An attribute to sort by (e.g. "name"). If None, don't do sorting.
   descending (bool) :
     Return results in descending order, according to the sort_by attribute.
   """

@@ -108,3 +108,7 @@ class CovidRoutingTest(unittest.TestCase):
     is_feasible, S = find_coarse_route("Wollaston", "South Station", _ROUTES_CONTAINING_STOP_COVID)
     print_coarse_route(S, "Wollaston", "South Station")
     self.assertTrue(is_feasible)
+
+
+if __name__ == "__main__":
+  unittest.main()

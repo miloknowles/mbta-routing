@@ -27,18 +27,24 @@ RouteNode = namedtuple("RouteNode", ["name", "parent_node", "connect_stop"])
 
 def preprocess_nominal(allow_cache=True):
   """
-  Builds a dictionary that maps the name of each stop to the names of routes that service it.
+  Builds a dictionary that maps the name of each stop to the names of routes that visit it.
 
   allow_cache (bool) : If True, will try to load precomputed results. If the cache is unavailable,
                        will compute the data structure and save it.
+
+  Returns (dict) :
+    key (str): Stop name.
+    value (set) : Set of route names that visit this stop.
   """
   path_to_output = os.path.abspath(os.path.join(os.path.abspath(__file__), "../../output/"))
   path_to_save = os.path.join(path_to_output, "routes_containing_stop_nominal.pkl")
 
+  # If cached results exist, return them.
   if os.path.exists(path_to_save) and allow_cache:
     with open(path_to_save, "rb") as f:
       return pickle.load(f)
 
+  # Otherwise, build the dictionary using API queries.
   routes_containing_stop = defaultdict(lambda: set())
 
   for (route_name, route_id) in ROUTE_LONGNAME_TO_ID.items():
@@ -49,6 +55,7 @@ def preprocess_nominal(allow_cache=True):
     for stop_name in stop_names:
       routes_containing_stop[stop_name].add(route_name)
 
+  # Save results to cache.
   if allow_cache:
     with open(path_to_save, "wb") as f:
       f.write(pickle.dumps(dict(routes_containing_stop)))
@@ -57,6 +64,9 @@ def preprocess_nominal(allow_cache=True):
 
 
 def check_covid_shutdown(stop_name):
+  """
+  Checks if a word in stop_name contains any of letters in COVID.
+  """
   for word in stop_name.split(" "):
     if word[0].upper() in "COVID":
       return True
@@ -64,6 +74,19 @@ def check_covid_shutdown(stop_name):
 
 
 def preprocess_covid(allow_cache=True):
+  """
+  Builds a dictionary that maps the name of each stop to the names of routes that visit it.
+
+  NOTE: Due to COVID closures, each route is first broken into connected component (e.g. Green Line C-1).
+  This allows us to do path finding with the same algorithm as before, just with a larger set of routes.
+
+  allow_cache (bool) : If True, will try to load precomputed results. If the cache is unavailable,
+                       will compute the data structure and save it.
+
+  Returns (dict) :
+    key (str): Stop name.
+    value (set) : Set of (modified) route names that visit this stop.
+  """
   path_to_output = os.path.abspath(os.path.join(os.path.abspath(__file__), "../../output/"))
   path_to_save = os.path.join(path_to_output, "routes_containing_stop_covid.pkl")
 
@@ -140,6 +163,7 @@ def find_coarse_route(stop_A, stop_B, routes_containing_stop):
 
   # Easy case #1: stop_A and stop_B are the same.
   if stop_A == stop_B:
+    print("WARNING: {} and {} are the same, empty route returned".format(stop_A, stop_B))
     return True, []
 
   # Easy case #2: If stop_A and stop_B are on the same route already, return that one.

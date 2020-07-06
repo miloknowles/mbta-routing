@@ -73,6 +73,9 @@ def problem2_demo():
   Problem 2: (a) Compute the number of unique MBTA stops
              (b) Determine the route with fewest/most stops
              (c) (Bonus) Compute the distance of the shortest/longest route
+
+  NOTE: Occasionally, this will fail due to rate limiting. An error message should be printed
+  out in that case, just try running the file again and it should work.
   """
   print("=====================" * 5)
   success, routes_json = get_routes(route_types=[0, 1], sort_by="long_name", descending=False)
@@ -100,6 +103,10 @@ def problem2_demo():
   for long_name in routes_by_name:
     route_id = resolve_pointer(routes_by_name[long_name], "/id")
     success, stops_this_route_json = get_stops([route_id], sort_by="name", descending=False)
+
+    if not success:
+      print("Error during API request:\n", stops_this_route_json)
+
     stops_each_route[long_name] = strip_attributes(stops_this_route_json, "/attributes/name")
 
   minmax_stops_route_names, minmax_stops_num = dict_argmin_argmax(stops_each_route, fn=len)
@@ -113,13 +120,11 @@ def problem2_demo():
   print("  Number of unique stops:       ", len(stop_names))
   print("  Route with FEWEST stops:       {} (has {} stops)".format(minmax_stops_route_names[0], minmax_stops_num[0]))
   print("  Route with MOST stops:         {} (has {} stops)".format(minmax_stops_route_names[1], minmax_stops_num[1]))
-  print("  Geographically SHORTEST route: {} ({} km)".format(minmax_dist_route_names[0], minmax_dist_km[0]))
-  print("  Geographically LONGEST route:  {} ({} km)".format(minmax_dist_route_names[1], minmax_dist_km[1]))
-
+  print("  Geographically SHORTEST route: {} ({:.04f} km)".format(minmax_dist_route_names[0], minmax_dist_km[0]))
+  print("  Geographically LONGEST route:  {} ({:.04f} km)".format(minmax_dist_route_names[1], minmax_dist_km[1]))
   print("Done with Problem 2!")
 
 
 if __name__ == "__main__":
-  # problem1_demo()
-  # problem2_demo()
-  print(os.path.abspath(__file__))
+  problem1_demo()
+  problem2_demo()
