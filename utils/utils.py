@@ -1,6 +1,6 @@
-import json
 from math import radians, cos, sin, asin, sqrt
 
+import json
 from jsonpointer import resolve_pointer
 
 

@@ -25,7 +25,7 @@ ROUTE_LONGNAME_TO_ID = {
 RouteNode = namedtuple("RouteNode", ["name", "parent_node", "connect_stop"])
 
 
-def preprocess_nominal(allow_cache=True):
+def preprocess_nominal(allow_cache=True, verbose=True):
   """
   Builds a dictionary that maps the name of each stop to the names of routes that visit it.
 
@@ -41,6 +41,7 @@ def preprocess_nominal(allow_cache=True):
 
   # If cached results exist, return them.
   if os.path.exists(path_to_save) and allow_cache:
+    if verbose: print("NOTE: Using cached results from", path_to_save)
     with open(path_to_save, "rb") as f:
       return pickle.load(f)
 
@@ -73,7 +74,7 @@ def check_covid_shutdown(stop_name):
   return False
 
 
-def preprocess_covid(allow_cache=True):
+def preprocess_covid(allow_cache=True, verbose=True):
   """
   Builds a dictionary that maps the name of each stop to the names of routes that visit it.
 
@@ -91,6 +92,7 @@ def preprocess_covid(allow_cache=True):
   path_to_save = os.path.join(path_to_output, "routes_containing_stop_covid.pkl")
 
   if os.path.exists(path_to_save) and allow_cache:
+    if verbose: print("NOTE: Using cached results from", path_to_save)
     with open(path_to_save, "rb") as f:
       return pickle.load(f)
 
