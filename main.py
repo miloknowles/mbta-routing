@@ -1,4 +1,4 @@
-import json
+import json, os
 from jsonpointer import resolve_pointer
 
 from utils.mbta_api import get_routes, get_stops
@@ -121,4 +121,5 @@ def problem2_demo():
 
 if __name__ == "__main__":
   # problem1_demo()
-  problem2_demo()
+  # problem2_demo()
+  print(os.path.abspath(__file__))

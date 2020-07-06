@@ -12,7 +12,7 @@
 
 from collections import defaultdict, deque, namedtuple
 from itertools import combinations
-import pickle
+import pickle, os
 
 from utils.mbta_api import get_routes, get_stops
 from utils.utils import *
@@ -21,7 +21,20 @@ from utils.utils import *
 RouteNode = namedtuple("RouteNode", ["name", "parent_node", "connect_stop"])
 
 
-def preprocess_find_coarse_route():
+def preprocess_find_coarse_route(allow_cache=True):
+  """
+  Builds a dictionary that maps the name of each stop to the names of routes that service it.
+
+  allow_cache (bool) : If True, will try to load precomputed results. If the cache is unavailable,
+                       will compute the data structure and save it.
+  """
+  path_to_output = os.path.abspath(os.path.join(os.path.abspath(__file__), "../../output/"))
+  path_to_save = os.path.join(path_to_output, "routes_containing_stop.pkl")
+
+  if os.path.exists(path_to_save) and allow_cache:
+    with open(path_to_save, "rb") as f:
+      return pickle.load(f)
+
   route_name_to_id = {
     "Blue Line": "Blue",
     "Green Line B": "Green-B",
@@ -42,6 +55,10 @@ def preprocess_find_coarse_route():
     stop_names = strip_attributes(stops_json, "/attributes/name")
     for stop_name in stop_names:
       routes_containing_stop[stop_name].add(route_name)
+
+  if allow_cache:
+    with open(path_to_save, "wb") as f:
+      f.write(pickle.dumps(dict(routes_containing_stop)))
 
   return routes_containing_stop
 
@@ -69,7 +86,7 @@ def find_coarse_route(stop_A, stop_B, routes_containing_stop):
 
   # Easy case: If stop_A and stop_B are on the same route already, return that one.
   if len(possible_routes_A.intersection(possible_routes_B)) > 0:
-    shared_route = possible_routes_A.intersection(possible_routes_B)[0]
+    shared_route = possible_routes_A.intersection(possible_routes_B).pop()
     return [RouteNode(name=shared_route, parent_node=None, connect_stop=stop_A)]
 
   # Otherwise, do BFS to find the path with the minimum # of transfers.
@@ -97,39 +114,3 @@ def find_coarse_route(stop_A, stop_B, routes_containing_stop):
   sequence.reverse()
 
   return sequence
-
-
-if __name__ == "__main__":
-  route_name_to_id = {
-    "Blue Line": "Blue",
-    "Green Line B": "Green-B",
-    "Green Line C": "Green-C",
-    "Green Line D": "Green-D",
-    "Green Line E": "Green-E",
-    "Mattapan Trolley": "Mattapan",
-    "Orange Line": "Orange",
-    "Red Line": "Red"
-  }
-  # success, routes_json = get_routes(route_types=[0, 1], sort_by="long_name", descending=False)
-  # route_names = strip_attributes(routes_json, "/attributes/long_names")
-  route_names = ['Blue Line', 'Green Line B', 'Green Line C', 'Green Line D',
-                 'Green Line E', 'Mattapan Trolley', 'Orange Line', 'Red Line']
-
-  # route_ids  = strip_attributes(routes_json, "/id")
-  route_ids = ['Blue', 'Green-B', 'Green-C', 'Green-D', 'Green-E', 'Mattapan', 'Orange', 'Red']
-  # print(route_ids)
-
-  routes_containing_stop = defaultdict(lambda: set())
-
-  for (route_name, route_id) in route_name_to_id.items():
-    success, stops_json = get_stops([route_id], sort_by="name", descending=False)
-    stop_names = strip_attributes(stops_json, "/attributes/name")
-    for stop_name in stop_names:
-      routes_containing_stop[stop_name].add(route_name)
-
-  # print(routes_containing_stop)
-
-  seq = find_coarse_route("Kendall/MIT", "Boston College", list(route_name_to_id.keys()), routes_containing_stop)
-
-  for node in seq:
-    print(node.name)
