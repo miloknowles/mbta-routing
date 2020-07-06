@@ -2,7 +2,7 @@ import requests
 from jsonpointer import resolve_pointer
 
 
-def get_routes(route_types=[0,1], sort_by="long_name", descending=False):
+def get_routes(route_types=[0, 1], sort_by="long_name", descending=False):
   """
   Query routes from the MBTA API, optionally filtering by a route type.
   https://api-v3.mbta.com/docs/swagger/index.html#/Route/ApiWeb_RouteController_index

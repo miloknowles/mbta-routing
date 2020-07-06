@@ -8,6 +8,25 @@ def print_json(d):
   print(json.dumps(d, indent=2))
 
 
+def print_coarse_route(S, A, B):
+  """
+  Convenience function for printing out a sequence of routes.
+
+  S (list of RouteNode) : See routing.py
+  A (str) : Name of the origin stop.
+  B (str) : Name of the destination stop.
+  """
+  print("====== Directions for {} to {} ======".format(A, B))
+  print("(1) Start at {}".format(A))
+  for i, node in enumerate(S):
+    if node.parent_node is None:
+      print("({}) Get on {} at {}".format(i + 2, node.name, node.connect_stop))
+    else:
+      print("({}) Transfer from {} to {} via {}".format(
+          i + 2, node.parent_node.name, node.name, node.connect_stop))
+  print("({}) End at {}".format(i + 3, B))
+
+
 def strip_attributes(json, ptr):
   """
   Convenience function for getting one or more attributes from a list of objects.
