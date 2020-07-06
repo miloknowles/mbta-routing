@@ -1,7 +1,5 @@
 # MBTA Routing Coding Challenge
 
-This repository implements solutions for the ADAPT coding challenge.
-
 ## Setup
 
 - `pip3 install jsonpointer`
